@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 
 function ToDo() {
 
     // Declaration
-    const [data, setData]= useState("");
+    const [task, setTask]= useState("");
 
     // Functions
 
     function handleInput(e){
-        setData(e.target.value);
+        setTask(e.target.value);
     }
 
 
@@ -35,7 +36,7 @@ function ToDo() {
 
 
                 <button type="button" class="btn btn-success">Add Task</button>
-                <p>{data}</p>
+                <p>{task}</p>
 
                 <ul class="list-group list-group-flush">
                     
