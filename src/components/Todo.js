@@ -56,9 +56,19 @@ function ToDo() {
         fetchTasks();
       }, []);
 
-    // function deleteTask(){
-
-    // }
+      function deleteTask(id) {
+        // Send a DELETE request to the server to delete a task by id using axios
+        axios.delete('http://localhost:4000/list/' + id )
+          .then(function(response) {
+            console.log('Task deleted:', response.data);
+    
+            // Fetch the updated list of tasks
+            fetchTasks();
+          })
+          .catch(function(error) {
+            console.error('Error deleting task:', error);
+          });
+      }
 
     // function moveTaskDown(){
 
@@ -99,7 +109,12 @@ function ToDo() {
 
                 <ol class="list-group list-group-flush">
                 {tasks.map(function (task, index) {
-                  return <li key={index}>{task.list}</li>;
+                  return <li key={index}>
+                    {task.list}
+                    <button onClick={function() { deleteTask(task.id); }}>&#128465;</button>
+                    <button>&#128070;</button>
+                    <button>&#128071;</button>
+                    </li>;
                 })}
                 </ol>
                 </div>
