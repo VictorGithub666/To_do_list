@@ -21,10 +21,10 @@ function ToDo() {
         
 
         // Determine the new task ID based on the current highest ID
-    var newId = tasks.length > 0 ? Math.max(...tasks.map(function(task) { return task.id; })) + 1 : 1;
+        e.preventDefault();
 
-    // Task data to be sent with the new ID
-    const data = { id: newId, list: task };
+        // Task data to be sent
+        const data = { list: task };
 
         
 
@@ -61,9 +61,11 @@ function ToDo() {
         fetchTasks();
       }, []);
 
+
+
       function deleteTask(id) {
         // Send a DELETE request to the server to delete a task by id using axios
-        axios.delete('http://localhost:4000/list/' + id )
+        axios.delete('http://localhost:4000/list/' + id)
           .then(function(response) {
             console.log('Task deleted:', response.data);
     
@@ -75,6 +77,11 @@ function ToDo() {
           });
       }
 
+
+
+
+
+
       function moveTaskDown(index) {
         // Check if the task is not the first item
         if (index < tasks.length -1) {
@@ -84,17 +91,7 @@ function ToDo() {
     
           setTasks(updatedTasks);
     
-          // Send a PUT request to the server to update the tasks order
-          axios.put('http://localhost:4000/list', updatedTasks)
-            .then(function(response) {
-              console.log('Tasks reordered:', response.data);
-    
-              // Fetch the updated list of tasks
-              fetchTasks();
-            })
-            .catch(function(error) {
-              console.error('Error reordering tasks:', error);
-            });
+        
         }
       }
 
@@ -108,18 +105,7 @@ function ToDo() {
           [updatedTasks[index], updatedTasks[index - 1]] = [updatedTasks[index - 1], updatedTasks[index]];
     
           setTasks(updatedTasks);
-    
-          // Send a PUT request to the server to update the tasks order
-          axios.put('http://localhost:4000/list', updatedTasks)
-            .then(function(response) {
-              console.log('Tasks reordered:', response.data);
-    
-              // Fetch the updated list of tasks
-              fetchTasks();
-            })
-            .catch(function(error) {
-              console.error('Error reordering tasks:', error);
-            });
+          
         }
       }
 
@@ -134,7 +120,18 @@ function ToDo() {
     const style = {
         width: "36rem",
         alignSelf: "center",
+        backgroundColor: "black",
+        border: "solid",
+        borderColor: "#00ff00",
     }
+
+    const btnStyle = {
+        color: "black",
+        backgroundColor: "#00ff00",
+        fontWeight: "800",
+    }
+
+    
 
     return (
         <div class="bd">
@@ -143,26 +140,27 @@ function ToDo() {
 
 
                 <div class="card-header">
-                    <h3>TO DO APP</h3>
+                    <h2>TO DO APP</h2>
                 </div>
 
 
                 <input id='taskInput' onChange={handleInput} />
 
 
-                <button type="button" class="btn btn-success" onClick={addTask}>Add Task</button>
+                <button style={btnStyle} type="button" class="btn" onClick={addTask}>Add Task</button>
 
-                <ol class="list-group list-group-flush">
+                <ol id="bd-ol" class="list-group list-group-flush">
                 {tasks.map(function (task, index) {
                   return <li key={index}>
                     
-                    {task.list}
+                    <p>{task.list}</p>
+                    
+                    
+                    <button id="tsk-btn" onClick={function() { deleteTask(task.id); }}>&#128465;</button>
 
-                    <button onClick={function() { deleteTask(task.id); }}>&#128465;</button>
+                    <button id="tsk-btn" onClick={function() { moveTaskUp(index); }}>&#128070;</button>
 
-                    <button onClick={function() { moveTaskUp(index); }}>&#128070;</button>
-
-                    <button onClick={function() { moveTaskDown(index); }}>&#128071;</button>
+                    <button id="tsk-btn" onClick={function() { moveTaskDown(index); }}>&#128071;</button>
                     </li>;
                 })}
                 </ol>
