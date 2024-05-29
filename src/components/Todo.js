@@ -18,8 +18,13 @@ function ToDo() {
 
     function addTask(e){
         e.preventDefault();
-        // Tasks to be sent will be lists
-        const data = { list: task };
+        
+
+        // Determine the new task ID based on the current highest ID
+    var newId = tasks.length > 0 ? Math.max(...tasks.map(function(task) { return task.id; })) + 1 : 1;
+
+    // Task data to be sent with the new ID
+    const data = { id: newId, list: task };
 
         
 
@@ -70,13 +75,30 @@ function ToDo() {
           });
       }
 
-    // function moveTaskDown(){
+      
 
-    // }
-
-    // function moveTaskUp(){
-
-    // }
+    function moveTaskUp(index) {
+        // Check if the task is not the first item
+        if (index > 0) {
+          const updatedTasks = [...tasks];
+    
+          [updatedTasks[index], updatedTasks[index - 1]] = [updatedTasks[index - 1], updatedTasks[index]];
+    
+          setTasks(updatedTasks);
+    
+          // Send a PUT request to the server to update the tasks order
+          axios.put('http://localhost:4000/list', updatedTasks)
+            .then(function(response) {
+              console.log('Tasks reordered:', response.data);
+    
+              // Fetch the updated list of tasks
+              fetchTasks();
+            })
+            .catch(function(error) {
+              console.error('Error reordering tasks:', error);
+            });
+        }
+      }
 
 
     
@@ -110,10 +132,14 @@ function ToDo() {
                 <ol class="list-group list-group-flush">
                 {tasks.map(function (task, index) {
                   return <li key={index}>
+                    
                     {task.list}
+
                     <button onClick={function() { deleteTask(task.id); }}>&#128465;</button>
-                    <button>&#128070;</button>
-                    <button>&#128071;</button>
+
+                    <button onClick={function() { moveTaskUp(index); }}>&#128070;</button>
+
+                    <button onClick={function() { moveTaskUp(index); }}>&#128071;</button>
                     </li>;
                 })}
                 </ol>
